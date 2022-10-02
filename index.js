@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { ApolloServer, gql, UserInputError } = require("apollo-server");
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
@@ -7,7 +8,7 @@ const knex = require("knex")({
     host: "localhost",
     port: 5432,
     user: "postgres",
-    password: "Aniket@88445",
+    password: process.env.PSQL_PASSWORD,
     database: "user"
   }
 })
@@ -88,7 +89,7 @@ const resolvers = {
               const response = await fetch("https://ifsc.razorpay.com/" + ifsc);
               const bankDetails = await response.json();
               const apiKey = "46ce58f9349fcb4bdcf0e951999bbd24";
-              const weatherResponse = await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + bankDetails.CITY + "&units=metric&appid=" + apiKey);
+              const weatherResponse = await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + bankDetails.CITY + "&units=metric&appid=" + process.env.API_KEY);
               const weatherData = await weatherResponse.json();
               account.push({
                 bank: bankDetails.BANK,
@@ -113,10 +114,10 @@ const resolvers = {
             
             }
 
-            knex("user_data").insert({user_id: res.data.user_id,
-              user_name: res.data.user_name,
+            knex("user_data").insert({id: res.data.user_id,
+              name: res.data.user_name,
               accounts: JSON.stringify(account)})
-              .onConflict('user_id')
+              .onConflict('id')
               .merge()
               .then( function () {
                 console.log("ok");
