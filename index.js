@@ -88,7 +88,6 @@ const resolvers = {
 
               const response = await fetch("https://ifsc.razorpay.com/" + ifsc);
               const bankDetails = await response.json();
-              const apiKey = "46ce58f9349fcb4bdcf0e951999bbd24";
               const weatherResponse = await fetch("https://api.openweathermap.org/data/2.5/weather?q=" + bankDetails.CITY + "&units=metric&appid=" + process.env.API_KEY);
               const weatherData = await weatherResponse.json();
               account.push({
